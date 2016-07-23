@@ -1,0 +1,68 @@
+<div class="container" style="padding-top: 50px;">
+    
+    <% @posts.each do |post| %>
+
+        <div class="well">
+        
+        <!-- 글 보여주기 -->
+            <b><%= post.title %></b></br>
+            <%= post.content %></br>
+            <%= post.created_at %></br>
+            <hr>
+            
+        <!-- 댓글 보여주기 -->
+        <% post.comments.each do |c| %>
+            <%= c.content %>
+            <small><%= c.created_at %></small></br>
+            <% end %>
+            
+        <!-- 댓글 달기 -->
+        
+            <textarea class="form-control" rows="5" id="content_<%= post.id %>" name="xylitol"></textarea>
+            <button value="<%= post.id %>" type="submit" class="btn btn-default comment_submit">submit</button>
+        
+        </div>
+    <% end %>
+    
+    
+    <!-- 글 쓰기 -->
+    <form action= "/board/create" method="POST">
+        
+        <div class="form-group">
+            <label for="exampleInputEmail1">Title</label>
+            <input type="text" name="title" class="fom-control" placeholder="글 제목">
+        </div>
+        
+        <div class="form-group">
+            <label for="exampleInputContent1">content</label>
+            <textarea class="form-control" name="content" placeholder="글 내용"></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-default">Submit</button>
+        
+    </form>    
+</div>
+
+<script>
+// comment_submit이란 녀석이 클릭이 되면, 아래 코드를 돌린다
+$('.comment_submit').click(function(){
+   
+    post_id = this.value; //alert로 계속 확인하는 게 자바스크립트 디버깅 노하우
+    post_content= $("#content_" + post_id).val()
+    
+    $.ajax({
+      method: "POST",
+      url: "/board/comment_create",
+      data: { xylitol: post_content, post_id: post_id }
+      success: function(){
+          alert("댓글이 작성되었습니다!");
+      },
+      error: function(){
+          alert("댓글이 작성되지 않았습니다!");
+      }
+    })
+        //내용 바로 추가
+        //append()
+        //placeholder비우기
+});
+</script>
